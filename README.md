@@ -7,7 +7,6 @@
 - \[ \] Piece Movement
 - \[ \] Code Framework
 - \[ \] Move Generator
-- \[ \] Evaluation function
 - \[ \] Time Management
 - \[ \] Pick move
 - \[ \] Unit tests
