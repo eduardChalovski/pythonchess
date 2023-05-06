@@ -39,6 +39,13 @@ side = white
 #castling rights in bit representation, where 15 is 1111, meaning both sides can castle both on the queen and king side
 can_castle = 0
 
+#piece movement offsets
+knight_movement = [33, 31, 18, 14, -33, -31, -18, -14]
+bishop_movement = [15, 17, -15, -17]
+rook_movement = [16, -16, 1, -1]
+king_movement = [16, -16, 1, -1, 15, 17, -15, -17]
+
+
 
 def clear_board():
     #loop over column
@@ -63,6 +70,94 @@ def print_board():
             #check if the piece is on the field
             if not position & 0x88:
                 print(char_ascii[board[position]], end=' ')
+        print(end='\n')
+    print("\n    A B C D E F G H")
+
+
+def is_position_attacked(position, side):
+
+
+    #attacked by pawn
+    if not side:
+        if not ((position + 17) & 0x88) and board[position + 17] == P:
+            return True
+        elif not ((position + 15) & 0x88) and board[position + 15] == P:
+            return True
+    else:
+        if not ((position - 17) & 0x88) and board[position - 17] == p:
+            return True
+        elif not ((position - 15) & 0x88) and board[position - 15] == p:
+            return True
+        
+    #attacked by knight
+    if not side:
+        for move in knight_movement:
+            if not ((position + move) & 0x88) and board[position + move] == N:
+                return True
+    else:
+        for move in knight_movement:
+            if not ((position + move) & 0x88) and board[position + move] == n:
+                return True
+            
+    #attacked by king
+    if not side:
+        for move in king_movement:
+            if not ((position + move) & 0x88) and board[position + move] == K:
+                return True
+    else:
+        for move in king_movement:
+            if not ((position + move) & 0x88) and board[position + move] == k:
+                return True
+            
+    #attacked by Bishop and Queen
+    for move in bishop_movement:
+        #creates new temp position
+        new_position = position + move
+
+        #loop through all the available positions for one move
+        while not ((new_position) & 0x88):
+
+            #grabs the piece at current position
+            target = board[new_position]
+
+            #checks if the position is attacked by B
+            if (target == B or target == Q) if not side else (target == b or target == q):
+                return True
+            
+            #breaks if it hits a piece
+            elif target != 0:
+                break
+
+            #increment to new next position
+            new_position += move
+
+    #attacked by Rook and Queen
+    for move in rook_movement:
+        new_position = position + move
+
+        while not ((new_position) & 0x88):
+            target = board[new_position]
+
+            if (target == R or target == Q) if not side else (target == r or target == q):
+                return True
+            
+            elif target != 0:
+                break
+
+            new_position += move
+
+
+def print_attack():
+    #loop over column
+    for rank in range(8):
+        #loop over row
+        for file in range(16):
+            if file == 0:
+                print(rank + 1, end='   ')
+            position = file + rank * 16
+            #check if the piece is on the field
+            if not position & 0x88:
+                print('x' if is_position_attacked(position, side) else '.', end=' ')
         print(end='\n')
     print("\n    A B C D E F G H")
 
@@ -128,9 +223,10 @@ def load_fen(fen):
 
 
 def main():
-    load_fen(start_position)
+    load_fen("8/8/8/3q4/8/8/8/8 b KQkq g5 0 1")
     print_stats()
     print_board()
+    print_attack()
 
 if __name__ == '__main__':
     main()
