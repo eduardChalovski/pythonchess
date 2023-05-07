@@ -192,7 +192,7 @@ def print_attack():
     print("\n    A B C D E F G H")
 
 
-def print_stats():
+def print_stats(char_sides, side, can_castle):
     print("Side to move: " + char_sides[side])
     print("Castling: " + str(bin(can_castle)[2:]).rjust(4, '0'))
 
@@ -253,8 +253,8 @@ def load_fen(fen):
 
 
 def main():
-    load_fen("8/8/8/3q4/8/8/8/8 b KQkq g5 0 1")
-    print_stats()
+    load_fen("rb6/8/8/3q4/8/8/6BR/8 b KQkq g5 0 1")
+    print_stats(char_sides, side, can_castle)
     print_board()
     board[e2] = P
     print_board()
