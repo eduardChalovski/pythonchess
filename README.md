@@ -2,7 +2,7 @@
 
 ### First Checklist until 12.05.2023
 
-- \[ \] FEN Loader
+- \[X\] FEN Loader
 - \[X\] General Movement Rules
 - \[ \] Piece Movement
 - \[ \] Code Framework
