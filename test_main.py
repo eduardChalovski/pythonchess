@@ -15,49 +15,35 @@ import main
 #   assert main.add(num1,num2) == result
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def board():
     return main.board
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def char_ascii():
     return main.char_ascii
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def char_sides():
     return main.char_sides
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def side():
     return main.side
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def can_castle():
     return main.can_castle
 
 
-
-# problem: there is only one global state and loadfen changes state before any of the tests  
-def test_print_stats(capsys, char_sides, side, can_castle):
-
-    main.print_stats(char_sides, side, can_castle)
-    stdout, stderr = capsys.readouterr()                    # reading prints before
-    assert stdout == "Side to move: w\nCastling: 0000\n"
-
-# 
-#main.load_fen("8/8/8/3q4/8/8/8/8 b KQkq g5 0 1")
-#
-#def test_print_stats1(capsys, char_sides, side, can_castle):
-#
-#    main.print_stats(char_sides, side, can_castle)
-#    stdout, stderr = capsys.readouterr()                   
-#    assert stdout == "Side to move: b\nCastling: 1111\n"
+@pytest.mark.parametrize('char_sides, side, can_castle, result', [
+                                                  ('wb', 0, 0, "Side to move: w\nCastling: 0000\n"),
+                                                  ('wb', 1, 15, "Side to move: b\nCastling: 1111\n")
+                                                 ])
+def test_print_stats(capsys, char_sides, side, can_castle, result):
+    main.print_stats(char_sides,side,can_castle)
+    stdout, stderr = capsys.readouterr()
+    assert stdout == result
 
 
-
-
-# def test_print_board(capsys, board, char_ascii):  # look at reference (2) 
-#     main.print_board
-#     stdout, stderr = capsys.readouterr()
-#     assert 
 
