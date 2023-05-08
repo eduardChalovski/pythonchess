@@ -15,25 +15,7 @@ import main
 #   assert main.add(num1,num2) == result
 
 
-@pytest.fixture()
-def board():
-    return main.board
 
-@pytest.fixture()
-def char_ascii():
-    return main.char_ascii
-
-@pytest.fixture()
-def char_sides():
-    return main.char_sides
-
-@pytest.fixture()
-def side():
-    return main.side
-
-@pytest.fixture()
-def can_castle():
-    return main.can_castle
 
 
 @pytest.mark.parametrize('char_sides, side, can_castle, result', [
