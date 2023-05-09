@@ -340,7 +340,8 @@ def generate_move():
                                 is_attacked = True
 
                         if not is_attacked:
-                            print("Can castle King side")
+                            pass
+                            #print("Can castle King side")
 
                     if can_castle & Castling['qc']and position == 4 and not board[3] and not board[2] and not board [1] and board[0] == r:
                         is_attacked = False
@@ -349,7 +350,8 @@ def generate_move():
                                 is_attacked = True
                         
                         if not is_attacked:
-                            print("Can castle Queen side")                
+                            pass
+                            #print("Can castle Queen side")                
 
             #knight moves and captures
             if (board[position] == N) if not side else (board[position] == n):
@@ -365,13 +367,13 @@ def generate_move():
                             #check if it captured something or hits empty square
                             if target:
                                 pass
-                                print("Knight on " + square_representation[position] + " can capture " + square_representation[position + move])
+                                #print("Knight on " + square_representation[position] + " can capture " + square_representation[position + move])
                             
                             else:
                                 pass
-                                print("Knight on " + square_representation[position] + " can move to " + square_representation[position + move])
+                                #print("Knight on " + square_representation[position] + " can move to " + square_representation[position + move])
 
-            #king standart moves and captures
+            #king standart moves and captures comments same as in knight moves
             if (board[position] == K) if not side else (board[position] == k):
                 for move in king_movement:
                     if not (position + move) & 0x88:
@@ -386,9 +388,60 @@ def generate_move():
                                 pass
                                 #print("King on " + square_representation[position] + " can move to " + square_representation[position + move])
 
+            #bishop and queen movement
+            if ((board[position] == B) or (board[position] == Q)) if not side else ((board[position] == b) or (board[position] == q)):
+                #loop over bishop and queen moves
+                for move in bishop_movement:
+                    #safe target square and increment
+                    target = position + move
+
+                    while (not target & 0x88):
+                        #get piece at targeted position
+                        piece = board[target]
+
+                        #if it hits own piece
+                        if ((piece >= 1 and piece <= 6) if not side else (piece >= 7 and piece <= 12)):
+                            break
+
+                        #if it hits opponent piece
+                        if ((piece >= 7 and piece <= 12) if not side else (piece >= 1 and piece <= 6)):
+                            #print("Bishop or Queen on " + square_representation[position] + " can capture on " + square_representation[target])
+                            break
+
+                        #if square empty
+                        if not piece:
+                            #print("Bishop or Queen on " + square_representation[position] + " can go to " + square_representation[target])
+                            pass
+
+                        target += move
+
+            #rook and queen movement documentation in above code
+            if ((board[position] == R) or (board[position] == Q)) if not side else ((board[position] == r) or (board[position] == q)):
+                for move in rook_movement:
+                    target = position + move
+
+                    while (not target & 0x88):
+                        piece = board[target]
+
+                        if ((piece >= 1 and piece <= 6) if not side else (piece >= 7 and piece <= 12)):
+                            break
+
+                        if ((piece >= 7 and piece <= 12) if not side else (piece >= 1 and piece <= 6)):
+                            print("Rook or Queen on " + square_representation[position] + " can capture on " + square_representation[target])
+                            break
+
+                        #if square empty
+                        if not piece:
+                            print("Rook or Queen on " + square_representation[position] + " can go to " + square_representation[target])
+                            pass
+
+                        target += move
+
+                        
+
 
 def main():
-    load_fen('r3k2r/pPppqpb1/bp2Pnp1/3PN3/1p2P3/2P2QNp/PPPpB2P/R3Kr1R w KQkq - 0 1')
+    load_fen('r3P2r/pPppqpb1/bp2Pnp1/3PN3/1P2P3/2P2QNp/PPPpB1pP/R3Kr1R b KQkq - 0 1')
     #print_attack()
     print_stats()
     print_board()
