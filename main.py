@@ -251,34 +251,61 @@ def generate_move():
 
                         #other pawn moves
                         else:
+                            pass
                             #move one square ahead
-                            print("P moves from " + square_representation[position] + " to " + square_representation[position - 16])
+                            #print("P moves from " + square_representation[position] + " to " + square_representation[position - 16])
 
                             #move to squares
                             if(position > 95 and position < 104) and not board[position - 32]:
-                                print("P can double move from " + square_representation[position] + " to " + square_representation[position - 32])
+                                pass
+                                #print("P can double move from " + square_representation[position] + " to " + square_representation[position - 32])
+
+                    #pawn capture moves
+                    for movement in bishop_movement:
+                        if not (position - movement) & 0x88 and board[position - movement] and movement > 0 and board[position - movement] > 6:
+                            
+                            #look for promotion capture
+                            if position > 15 and position < 24: 
+                                print("P can promote attack from " + square_representation[position] + " to " + square_representation[position - movement])
+                            
+                            #casual capture
+                            else:
+                                print("P can attack from " + square_representation[position] + " to " + square_representation[position - movement])
+
+
 
             #black moves
             else:
                 #pawn moves
                 if board[position] == p:
                     if not (position + 16) & 0x88 and not board[position + 16]:
-                        if position > 95 and position < 104: 
-                            print("p promotes from " + square_representation[position] + " to " + square_representation[position + 16])
+                        if position > 95 and position < 104:
+                            pass
+                            #print("p promotes from " + square_representation[position] + " to " + square_representation[position + 16])
 
                         else:
-                            print("p moves from " + square_representation[position] + " to " + square_representation[position + 16])
+                            pass
+                            #print("p moves from " + square_representation[position] + " to " + square_representation[position + 16])
 
                             if(position > 15 and position < 24) and not board[position + 32]:
-                                print("p can double move from " + square_representation[position] + " to " + square_representation[position + 32])
-            
+                                pass
+                                #print("p can double move from " + square_representation[position] + " to " + square_representation[position + 32])
+
+                    for movement in bishop_movement:
+                        if not (position - movement) & 0x88 and board[position - movement] and movement < 0 and board[position - movement] < 7:
+                            
+                            if position > 95 and position < 104:
+                                print("p can promote attack from " + square_representation[position] + " to " + square_representation[position - movement])
+                            
+                            else:
+                                print("p can attack from " + square_representation[position] + " to " + square_representation[position - movement])
 
 
 def main():
-    load_fen('4k2r/P1ppqpbP/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 0 1')
+    load_fen('4k2r/pPppqpb1/bn2Pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPpP/R3K2R b KQkq - 0 1')
     print_stats()
     print_board()
-    print(square_representation.index('a7'))
+    #print(square_representation.index('a7'))
     generate_move()
 
 if __name__ == '__main__':
