@@ -175,6 +175,7 @@ def print_attack():
 
 
 def print_stats():
+    global can_castle_str
     print("Side to move: " + char_sides[side])
     print("Castling: " + str(bin(can_castle)[2:]).rjust(4, '0'))
 
@@ -247,7 +248,8 @@ def generate_move():
                     if not (position - 16) & 0x88 and not board[position - 16]:
                         #promotion condition
                         if position > 15 and position < 24: 
-                            print("P promotes from " + square_representation[position] + " to " + square_representation[position - 16])
+                            pass
+                            #print("P promotes from " + square_representation[position] + " to " + square_representation[position - 16])
 
                         #other pawn moves
                         else:
@@ -265,14 +267,41 @@ def generate_move():
                         if not (position - movement) & 0x88 and board[position - movement] and movement > 0 and board[position - movement] > 6:
                             
                             #look for promotion capture
-                            if position > 15 and position < 24: 
-                                print("P can promote attack from " + square_representation[position] + " to " + square_representation[position - movement])
+                            if position > 15 and position < 24:
+                                pass
+                                #print("P can promote attack from " + square_representation[position] + " to " + square_representation[position - movement])
                             
                             #casual capture
                             else:
-                                print("P can attack from " + square_representation[position] + " to " + square_representation[position - movement])
+                                pass
+                                #print("P can attack from " + square_representation[position] + " to " + square_representation[position - movement])
 
+                #white king moves
+                if board[position] == K:
 
+                    #check king side castle
+                    if can_castle & Castling['KC'] and position == 116 and not board[117] and not board[118] and board[119] == R:
+                        #temp variable to check if any pieces king side are attacked
+                        is_attacked = False
+                        for i in range(116, 119):
+                            if is_position_attacked(i, black):
+                                is_attacked = True
+
+                        if not is_attacked:
+                            pass
+                            #print("Can castle King side")
+
+                    #check queen side castle
+                    if can_castle & Castling['QC']and position == 116 and not board[115] and not board[114] and not board [113] and board[112] == R:
+                        #temp variable to check if any pieces king side are attacked
+                        is_attacked = False
+                        for i in range(113, 117):
+                            if is_position_attacked(i, black):
+                                is_attacked = True
+                        
+                        if not is_attacked:
+                            pass
+                            #print("Can castle Queen side")
 
             #black moves
             else:
@@ -295,17 +324,40 @@ def generate_move():
                         if not (position - movement) & 0x88 and board[position - movement] and movement < 0 and board[position - movement] < 7:
                             
                             if position > 95 and position < 104:
-                                print("p can promote attack from " + square_representation[position] + " to " + square_representation[position - movement])
+                                pass
+                                #print("p can promote attack from " + square_representation[position] + " to " + square_representation[position - movement])
                             
                             else:
-                                print("p can attack from " + square_representation[position] + " to " + square_representation[position - movement])
+                                pass
+                                #print("p can attack from " + square_representation[position] + " to " + square_representation[position - movement])
+
+                #black king moves, doucmentation in white king moves
+                if board[position] == k:
+                    if can_castle & Castling['kc'] and position == 4 and not board[5] and not board[6] and board[7] == r:
+                        is_attacked = False
+                        for i in range(4, 7):
+                            if is_position_attacked(i, white):
+                                is_attacked = True
+
+                        if not is_attacked:
+                            print("Can castle King side")
+
+                    if can_castle & Castling['qc']and position == 4 and not board[3] and not board[2] and not board [1] and board[0] == r:
+                        is_attacked = False
+                        for i in range(1, 5):
+                            if is_position_attacked(i, white):
+                                is_attacked = True
+                        
+                        if not is_attacked:
+                            print("Can castle Queen side")                
 
 
 def main():
-    load_fen('4k2r/pPppqpb1/bn2Pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPpP/R3K2R b KQkq - 0 1')
+    load_fen('r3k2r/pPppqpb1/bp2Pnp1/3PN3/1p2P3/2N2Q1p/PPPBB2P/R3K2R b KQkq - 0 1')
+    print_attack()
     print_stats()
     print_board()
-    #print(square_representation.index('a7'))
+    print(square_representation.index('e8'))
     generate_move()
 
 if __name__ == '__main__':
