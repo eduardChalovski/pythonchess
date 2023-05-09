@@ -242,7 +242,7 @@ def generate_move():
         if not position & 0x88:
             #white moves
             if not side:
-                #pawn moves
+                #pawn moves + captures
                 if board[position] == P:
                     #move forward
                     if not (position - 16) & 0x88 and not board[position - 16]:
@@ -276,7 +276,7 @@ def generate_move():
                                 pass
                                 #print("P can attack from " + square_representation[position] + " to " + square_representation[position - movement])
 
-                #white king moves
+                #white king castling
                 if board[position] == K:
 
                     #check king side castle
@@ -305,7 +305,7 @@ def generate_move():
 
             #black moves
             else:
-                #pawn moves
+                #pawn moves + captures
                 if board[position] == p:
                     if not (position + 16) & 0x88 and not board[position + 16]:
                         if position > 95 and position < 104:
@@ -331,7 +331,7 @@ def generate_move():
                                 pass
                                 #print("p can attack from " + square_representation[position] + " to " + square_representation[position - movement])
 
-                #black king moves, doucmentation in white king moves
+                #black king castling, doucmentation in white king moves
                 if board[position] == k:
                     if can_castle & Castling['kc'] and position == 4 and not board[5] and not board[6] and board[7] == r:
                         is_attacked = False
@@ -351,28 +351,44 @@ def generate_move():
                         if not is_attacked:
                             print("Can castle Queen side")                
 
-            #knight moves
+            #knight moves and captures
             if (board[position] == N) if not side else (board[position] == n):
                 #loop over knight moves
                 for move in knight_movement:
-                    #safe target piece for capture checks
-                    target = board[position + move]
+                    #check if targeted square is on board
+                    if not (position + move) & 0x88:
+                        #safe target piece for capture checks
+                        target = board[position + move]
 
-                    if not (board[position + move] & 0x88):
                         #2 situations for either white or black pieces
                         if (not target or (target >= 7 and target <= 12)) if not side else (not target or (target >= 1 and target <= 6)):
-                            
                             #check if it captured something or hits empty square
                             if target:
+                                pass
                                 print("Knight on " + square_representation[position] + " can capture " + square_representation[position + move])
                             
                             else:
+                                pass
                                 print("Knight on " + square_representation[position] + " can move to " + square_representation[position + move])
 
+            #king standart moves and captures
+            if (board[position] == K) if not side else (board[position] == k):
+                for move in king_movement:
+                    if not (position + move) & 0x88:
+                        target = board[position + move]
+
+                        if (not target or (target >= 7 and target <= 12)) if not side else (not target or (target >= 1 and target <= 6)):
+                            if target:
+                                pass
+                                #print("King on " + square_representation[position] + " can capture " + square_representation[position + move])
+                            
+                            else:
+                                pass
+                                #print("King on " + square_representation[position] + " can move to " + square_representation[position + move])
 
 
 def main():
-    load_fen('r3k2r/pPppqpb1/bp2Pnp1/3PN3/1p2P3/2N2Q1p/PPPBB2P/R3K2R w KQkq - 0 1')
+    load_fen('r3k2r/pPppqpb1/bp2Pnp1/3PN3/1p2P3/2P2QNp/PPPpB2P/R3Kr1R w KQkq - 0 1')
     #print_attack()
     print_stats()
     print_board()
