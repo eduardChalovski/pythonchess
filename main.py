@@ -89,7 +89,7 @@ def clear_board():
                 board[position] = e
 
 
-def print_board():
+def print_board(board):
     #loop over column
     for rank in range(8):
         #loop over row
@@ -255,9 +255,9 @@ def load_fen(fen):
 def main():
     load_fen("rb6/8/8/3q4/8/8/6BR/8 b KQkq g5 0 1")
     print_stats(char_sides, side, can_castle)
-    print_board()
+    print_board(board)
     board[e2] = P
-    print_board()
+    print_board(board)
     print_attack()
 
 if __name__ == '__main__':
