@@ -4,7 +4,7 @@
 
 - \[X\] FEN Loader
 - \[X\] General Movement Rules
-- \[ \] Piece Movement
+- \[X\] Piece Movement
 - \[ \] Code Framework
 - \[ \] Move Generator
 - \[ \] Time Management
