@@ -351,13 +351,32 @@ def generate_move():
                         if not is_attacked:
                             print("Can castle Queen side")                
 
+            #knight moves
+            if (board[position] == N) if not side else (board[position] == n):
+                #loop over knight moves
+                for move in knight_movement:
+                    #safe target piece for capture checks
+                    target = board[position + move]
+
+                    if not (board[position + move] & 0x88):
+                        #2 situations for either white or black pieces
+                        if (not target or (target >= 7 and target <= 12)) if not side else (not target or (target >= 1 and target <= 6)):
+                            
+                            #check if it captured something or hits empty square
+                            if target:
+                                print("Knight on " + square_representation[position] + " can capture " + square_representation[position + move])
+                            
+                            else:
+                                print("Knight on " + square_representation[position] + " can move to " + square_representation[position + move])
+
+
 
 def main():
-    load_fen('r3k2r/pPppqpb1/bp2Pnp1/3PN3/1p2P3/2N2Q1p/PPPBB2P/R3K2R b KQkq - 0 1')
-    print_attack()
+    load_fen('r3k2r/pPppqpb1/bp2Pnp1/3PN3/1p2P3/2N2Q1p/PPPBB2P/R3K2R w KQkq - 0 1')
+    #print_attack()
     print_stats()
     print_board()
-    print(square_representation.index('e8'))
+    #print(square_representation.index('e8'))
     generate_move()
 
 if __name__ == '__main__':
