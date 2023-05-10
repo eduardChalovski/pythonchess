@@ -111,13 +111,13 @@ def get_move_castling(move):
 #move list
 class Moves:
     def __init__(self):
-        self.moves = [0] * 256
+        self.moves = []
         self.count = 0
 
     
     def add_move(self, move):
         #add move to the list
-        self.moves[self.count] = move
+        self.moves.append(move)
 
         #increase move counter
         self.count += 1
@@ -311,11 +311,7 @@ def load_fen(fen):
 
 
 # move generation
-def generate_move():
-    #reset move list count
-    move = Moves()
-
-
+def generate_move(move):
 
     # loop over all positions on the board
     for position in range(128):
@@ -560,7 +556,7 @@ def generate_move():
                             move.add_move(set_move(position, position + movement, 0, 0, 0, 0))
                             pass
 
-                        target += move
+                        target += movement
 
             # rook and queen movement documentation in above code
             if (
@@ -594,17 +590,27 @@ def generate_move():
                             move.add_move(set_move(position, position + movement, 0, 0, 0, 0))
                             pass
 
-                        target += move
+                        target += movement
 
 
 def main():
-    load_fen(start_position)
+    load_fen(fen)
     # print_attack()
     print_stats()
     print_board()
-    print(square_representation.index('g1'))
+    #print(square_representation.index('g1'))
 
-    generate_move()
+    moves = Moves()
+
+    moves.count = 0
+
+    generate_move(moves)
+
+    for move in moves.moves:
+        if get_move_capture(move):
+            print(char_ascii[board[get_move_source(move)]] + " can capture from " + square_representation[get_move_source(move)] + " to " + square_representation[get_move_target(move)])
+
+    print(moves.count)
 
 
 if __name__ == "__main__":
