@@ -600,6 +600,7 @@ def main():
     moves.add_move(move)
     moves.add_move(move_2)
 
+    print(bin(moves[0]))
     print(bin(moves[1]))
 
     generate_move()
