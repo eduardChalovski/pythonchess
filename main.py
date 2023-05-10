@@ -108,6 +108,25 @@ def get_move_castling(move):
     return (move >> 20) & 0x1
 
 
+#move list
+class Moves:
+    def __init__(self):
+        self.moves = [0] * 256
+        self.count = 0
+
+    
+    def add_move(self, move):
+        #add move to the list
+        self.moves[self.count] = move
+
+        #increase move counter
+        self.count += 1
+
+
+    def __getitem__(self, index):
+        return self.moves[index]
+
+
 def clear_board():
     # loop over column
     for rank in range(8):
@@ -575,14 +594,14 @@ def main():
 
     # set move
     move = set_move(96, 80, N, 1, 1, 1)
+    move_2 = set_move(97, 81, b, 0, 1, 0)
 
-    # encode move
-    print(square_representation[get_move_source(move)])
-    print(square_representation[get_move_target(move)])
-    print(promoted_pieces[get_move_piece(move)])
-    print(get_move_capture(move))
-    print(get_move_pawn(move))
-    print(get_move_castling(move))
+    moves = Moves()
+    moves.add_move(move)
+    moves.add_move(move_2)
+
+    print(bin(moves[1]))
+
     generate_move()
 
 
