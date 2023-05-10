@@ -39,6 +39,7 @@ char_sides = 'wb'
 
 #from ascii to normal chars
 char_pieces = {'P': P, 'N': N, 'B': B, 'R': R, 'Q': Q, 'K': K, 'p': p, 'n': n, 'b': b, 'r': r, 'q': q, 'k': k}
+promoted_pieces = {Q: 'q', R: 'r', B: 'b', N: 'n', q: 'q', r: 'r', b: 'b', n: 'n'}
 
 
 start_position = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -56,6 +57,55 @@ knight_movement = [33, 31, 18, 14, -33, -31, -18, -14]
 bishop_movement = [15, 17, -15, -17]
 rook_movement = [16, -16, 1, -1]
 king_movement = [16, -16, 1, -1, 15, 17, -15, -17]
+
+""" /*
+    Move formatting
+    
+    0000 0000 0000 0000 0111 1111       current position
+    0000 0000 0011 1111 1000 0000       target position
+    0000 0011 1100 0000 0000 0000       promotion piece
+    0000 0100 0000 0000 0000 0000       captures
+    0000 1000 0000 0000 0000 0000       double pawn move
+    0001 0000 0000 0000 0000 0000       castling
+
+*/ """
+
+
+# define movement information with bits
+def set_move(current, target, promotion_piece, capture, double_pawn, castling):
+    return (
+        current
+        | (target << 7)
+        | (promotion_piece << 14)
+        | (capture << 18)
+        | (double_pawn << 19)
+        | (castling << 20)
+    )
+
+
+# extract the information
+def get_move_source(move):
+    return move & 0x7F
+
+
+def get_move_target(move):
+    return (move >> 7) & 0x7F
+
+
+def get_move_piece(move):
+    return (move >> 14) & 0xF
+
+
+def get_move_capture(move):
+    return (move >> 18) & 0x1
+
+
+def get_move_pawn(move):
+    return (move >> 19) & 0x1
+
+
+def get_move_castling(move):
+    return (move >> 20) & 0x1
 
 
 def clear_board():
@@ -512,12 +562,27 @@ def generate_move():
 
                         target += move
 
+
 def main():
-    load_fen("r3P2r/pPppqpb1/bp2Pnp1/3PN3/1P2P3/2P2QNp/PPPpB1pP/R3Kr1R w KQkq - 0 1")
+    load_fen(start_position)
     # print_attack()
     print_stats()
     print_board()
-    # print(square_representation.index('e8'))
+    # print(square_representation.index('a3'))
+
+    # initialize move
+    move = 0
+
+    # set move
+    move = set_move(96, 80, N, 1, 1, 1)
+
+    # encode move
+    print(square_representation[get_move_source(move)])
+    print(square_representation[get_move_target(move)])
+    print(promoted_pieces[get_move_piece(move)])
+    print(get_move_capture(move))
+    print(get_move_pawn(move))
+    print(get_move_castling(move))
     generate_move()
 
 
