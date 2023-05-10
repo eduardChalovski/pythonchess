@@ -6,7 +6,7 @@
 - \[X\] General Movement Rules
 - \[X\] Piece Movement
 - \[ \] Code Framework
-- \[ \] Move Generator
+- \[X\] Move Generator
 - \[ \] Time Management
 - \[ \] Pick move
 - \[ \] Unit tests
