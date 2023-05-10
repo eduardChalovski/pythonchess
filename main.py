@@ -2,6 +2,7 @@
 Trying out some chess engine stuff
 """
 
+from random import randrange
 
 #defining the piece integer representation
 e, P, N, B, R, Q, K, p, n, b, r, q, k, o = range(14)
@@ -51,6 +52,9 @@ side = white
 
 #castling rights in bit representation, where 15 is 1111, meaning both sides can castle both on the queen and king side
 can_castle = 0
+
+#king position
+king_position = [116, 4]
 
 #piece movement offsets
 knight_movement = [33, 31, 18, 14, -33, -31, -18, -14]
@@ -271,8 +275,16 @@ def load_fen(fen):
             # check if the piece is on the field
             if not position & 0x88:
                 if (fen[fen_position] > "a" and fen[fen_position] < "z") or (
-                    fen[fen_position] > "A" and fen[fen_position] < "Z"
-                ):
+                    fen[fen_position] > "A" and fen[fen_position] < "Z"):
+
+                    #set king square
+                    if (fen[fen_position] == 'K'):
+                        king_position[white] = position
+                
+                    elif (fen[fen_position] == 'k'):
+                        king_position[black] = position
+
+
                     # set current board position to fen piece
                     board[position] = char_pieces[fen[fen_position]]
 
@@ -592,26 +604,62 @@ def generate_move(move):
 
                         target += movement
 
+#make move
+def make_move(move):
+    global side
+    global board
+    global king_position
+    global can_castle
+
+    #define board state copy variable
+    board_copy = [0] * 128
+    king_position_copy = [2]
+    side_copy = 0
+    can_castle_copy = 0
+
+    #copy board state
+    board_copy = board.copy()
+    king_position_copy = king_position.copy()
+    side_copy = side
+    can_castle_copy = can_castle
+
+    #get current and target position
+    position = get_move_source(move)
+    target = get_move_target(move)
+
+    print("Moving " + square_representation[position] + " to " + square_representation[target])
+
+    #make the move
+    board[target] = board[position]
+    board[position] = e
+
+
+
+    #restore board
+    board = board_copy
+    king_position = king_position_copy
+    side = side_copy
+    can_castle = can_castle_copy
+
 
 def main():
+
     load_fen(fen)
     # print_attack()
     print_stats()
     print_board()
-    #print(square_representation.index('g1'))
+    #print(square_representation.index('e1'))
 
+    #generate move
     moves = Moves()
-
     moves.count = 0
-
     generate_move(moves)
 
-    for move in moves.moves:
-        if get_move_capture(move):
-            print(char_ascii[board[get_move_source(move)]] + " can capture from " + square_representation[get_move_source(move)] + " to " + square_representation[get_move_target(move)])
+    #create test move
+    move = moves[randrange(moves.count)]
+    make_move(move)
 
-    print(moves.count)
-
+    print_board()
 
 if __name__ == "__main__":
     main()
