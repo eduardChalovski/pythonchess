@@ -13,19 +13,16 @@ import main
 #                                                  ])
 #def test_add(num1, num2, result):
 #   assert main.add(num1,num2) == result
+#def setUp(self):
+#
+#def tearDown(self):
+
+#fixture
 
 
 
 
 
-@pytest.mark.parametrize('char_sides, side, can_castle, result', [
-                                                  ('wb', 0, 0, "Side to move: w\nCastling: 0000\n"),
-                                                  ('wb', 1, 15, "Side to move: b\nCastling: 1111\n")
-                                                 ])
-def test_print_stats(capsys, char_sides, side, can_castle, result):
-    main.print_stats(char_sides,side,can_castle)
-    stdout, stderr = capsys.readouterr()
-    assert stdout == result
 
 
 # defining some parameters just to make the tests run 
@@ -48,6 +45,93 @@ rook_movement = [16, -16, 1, -1]
 king_movement = [16, -16, 1, -1, 15, 17, -15, -17]
 
 white, black = range(2)
+
+#side=white
+can_castle=0
+
+#def setup_module(module):
+#    global side
+#    global can_castle 
+#    can_castle = main.can_castle
+#    side = main.side
+
+@pytest.mark.parametrize('fen,board_result,side_result,can_castle_result', [('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                                                                            [r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
+                                                                             p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
+                                                                             R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o], white,15),
+                                                                             ('rnbqkbnr/8/pppppppp/8/RRRRnnnn/8/PPPPPPPP/RNBQKBNR b Kkq - 0 1',
+                                                                            [r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             R, R, R, R, n, n, n, n, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
+                                                                             R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o], black,13),
+                                                                             ('rnbqkbnr/8/pppppppp/8/RRRRnnnn/8/PPPPPPPP/RNBQKBNR b kq - 0 1',
+                                                                            [r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             R, R, R, R, n, n, n, n, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
+                                                                             R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o], black,12),
+                                                                             ('rnbqkbnr/8/pppppppp/8/RRRRnnnn/8/PPPPPPPP/RNBQKBNR b q - 0 1',
+                                                                            [r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             R, R, R, R, n, n, n, n, o, o, o, o, o, o, o, o,
+                                                                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                                             P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
+                                                                             R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o], black,8)])
+def test_load_fen(fen,board_result,side_result,can_castle_result):
+    main.load_fen(fen)
+    assert main.board == board_result
+    assert main.side == side_result
+    assert main.can_castle == can_castle_result
+
+
+
+@pytest.mark.parametrize('char_sides, side, can_castle, result', [
+                                                  ('wb', 0, 0, "Side to move: w\nCastling: 0000\n"),
+                                                  ('wb', 1, 15, "Side to move: b\nCastling: 1111\n")
+                                                 ])
+def test_print_stats(capsys, char_sides, side, can_castle, result):
+    main.print_stats(char_sides,side,can_castle)
+    stdout, stderr = capsys.readouterr()
+    assert stdout == result
+
+
+
+@pytest.mark.parametrize('board,side,result',[([r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
+                                                p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
+                                                e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
+                                                R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o],white,
+"1   . . . . . . . . \n2   . . . . . . . . \n3   . . . . . . . . \n4   . . . . . . . . \n5   . . . . . . . . \n6   x x x x x x x x \n7   x x x x x x x x \n8   . x x x x x x . \n\n    A B C D E F G H\n"),
+                                                ([r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
+                                                p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
+                                                e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
+                                                R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o],black,
+"1   . x x x x x x . \n2   x x x x x x x x \n3   x x x x x x x x \n4   . . . . . . . . \n5   . . . . . . . . \n6   . . . . . . . . \n7   . . . . . . . . \n8   . . . . . . . . \n\n    A B C D E F G H\n")])
+def test_print_attack(capsys, board, side, result):
+    main.print_attack(board,side)
+    stdout, stderr = capsys.readouterr()
+    assert stdout == result
 
 #testing positions to check whether is_position_attacked or not will be checked in the upper left corner of the board
 #I try to go through every if-branch from top to the bottom of the code
@@ -250,7 +334,6 @@ white, black = range(2)
 ])  
 def test_is_position_attacked(board,position,side,result):
     assert main.is_position_attacked(board,position,side) ==result
-#print the result of is_position_attacked 
 
 
 @pytest.mark.parametrize('board, result', [         #es werden zwei parameter gegeben: das erwartete Resultat und board, das geprinted wird 
@@ -262,7 +345,7 @@ def test_is_position_attacked(board,position,side,result):
                                                    e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                    P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
                                                    R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o], #unten ist das auf der Konsole erwartete String
-                                                   "1   r n b q k b n r \n2   p p p p p p p p \n3   . . . . . . . . \n4   . . . . . . . . \n5   . . . . . . . . \n6   . . . . . . . . \n7   P P P P P P P P \n8   R N B Q K B N R \n\n    A B C D E F G H\n"),
+"8   r n b q k b n r \n7   p p p p p p p p \n6   . . . . . . . . \n5   . . . . . . . . \n4   . . . . . . . . \n3   . . . . . . . . \n2   P P P P P P P P \n1   R N B Q K B N R \n\n    A B C D E F G H\n"),
                                                    ([r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o, #tupel 2
                                                      P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
                                                      P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o, #das zu printende Board 
@@ -271,11 +354,11 @@ def test_is_position_attacked(board,position,side,result):
                                                      P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
                                                      P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
                                                      R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o],
-                                                     "1   r n b q k b n r \n2   P P P P P P P P \n3   P P P P P P P P \n4   P P P P P P P P \n5   P P P P P P P P \n6   P P P P P P P P \n7   P P P P P P P P \n8   R N B Q K B N R \n\n    A B C D E F G H\n")
+"8   r n b q k b n r \n7   P P P P P P P P \n6   P P P P P P P P \n5   P P P P P P P P \n4   P P P P P P P P \n3   P P P P P P P P \n2   P P P P P P P P \n1   R N B Q K B N R \n\n    A B C D E F G H\n")
                                                 ])
-def test_print_board(capsys, board, result):   #dieser Test wird zweimal ausgeführt mit den beiden Werten aus den Tupeln
-    main.print_board(board)                 #hier printen wir das Board
-    stdout, stderr = capsys.readouterr()    #auf der Konsole ausgegeben String wird aufgenommen
+def test_print_board(capsys, board, result):        #dieser Test wird zweimal ausgeführt mit den beiden Werten aus den Tupeln
+    main.print_board(board)                         #hier printen wir das Board
+    stdout, stderr = capsys.readouterr()            #auf der Konsole ausgegeben String wird aufgenommen
     assert stdout == result                 
 
 def test_clear_board():
@@ -289,3 +372,4 @@ def test_clear_board():
                      e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                      e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o]
  
+
