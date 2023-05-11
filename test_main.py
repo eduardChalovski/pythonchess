@@ -28,7 +28,7 @@ def test_print_stats(capsys, char_sides, side, can_castle, result):
     assert stdout == result
 
 
-
+# defining some parameters just to make the tests run 
 e, P, N, B, R, Q, K, p, n, b, r, q, k, o = range(14)
 
 board = [
@@ -41,6 +41,216 @@ board = [
     P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
     R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o
 ]
+
+knight_movement = [33, 31, 18, 14, -33, -31, -18, -14]
+bishop_movement = [15, 17, -15, -17]
+rook_movement = [16, -16, 1, -1]
+king_movement = [16, -16, 1, -1, 15, 17, -15, -17]
+
+white, black = range(2)
+
+#testing positions to check whether is_position_attacked or not will be checked in the upper left corner of the board
+#I try to go through every if-branch from top to the bottom of the code
+#position = 0
+#side, here is meant attacking side
+@pytest.mark.parametrize('board,position,side,result', [
+                                                          ([e, k, e, e, e, e, e, e, o, o, o, o, o, o, o, o, # in this test check always first two lines of the board
+                                                            P, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, # in this test check always first two lines of the board
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],1,white,True), #1
+                                                          ([k, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                            e, P, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #2
+                                                          ([e, p, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                            K, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],16,black,True), #3
+                                                          ([p, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                            e, K, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                            e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],17,black,True), #4
+                                                            ([k, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, N, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #5
+                                                            ([K, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, n, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,True), #6
+                                                            ([n, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, K, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #7
+                                                            ([N, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, k, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,True), #8
+                                                            ([k, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, B, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #9
+                                                            ([k, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, Q, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #10
+                                                            ([K, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, Q, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #11
+                                                            ([K, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, b, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,True), #12
+                                                            ([K, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, q, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,True), #13
+                                                            ([K, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, b, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,True), #14
+                                                            ([k, R, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #15
+                                                            ([k, Q, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #16
+                                                            ([k, e, R, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,True), #17
+                                                            ([e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, k, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, R, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],33,white,True), #18 to show that function works not only in upper left corner of the board but in other area as well
+                                                            ([K, e, r, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,True), #19
+                                                            ([K, e, e, e, q, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,True), #20
+                                                            ([k, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,None), #21
+                                                            ([K, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,None), #22
+                                                            ([e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, N, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],35,white,None), #23
+                                                            ([k, r, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,True) #24 
+
+])  
+def test_is_position_attacked(board,position,side,result):
+    assert main.is_position_attacked(board,position,side) ==result
+#print the result of is_position_attacked 
 
 
 @pytest.mark.parametrize('board, result', [         #es werden zwei parameter gegeben: das erwartete Resultat und board, das geprinted wird 
@@ -67,3 +277,15 @@ def test_print_board(capsys, board, result):   #dieser Test wird zweimal ausgef√
     main.print_board(board)                 #hier printen wir das Board
     stdout, stderr = capsys.readouterr()    #auf der Konsole ausgegeben String wird aufgenommen
     assert stdout == result                 
+
+def test_clear_board():
+    main.clear_board(board)
+    assert board == [e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+                     e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                     e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                     e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                     e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                     e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                     e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
+                     e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o]
+ 
