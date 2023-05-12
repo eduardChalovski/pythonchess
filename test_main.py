@@ -99,9 +99,9 @@ castling_board =[
 ]
 
 
-@pytest.mark.parametrize('move,board_position, printed_result, board_result',
+@pytest.mark.parametrize('move,board_position, board_result',
                          [(main.set_move(main.square_representation.index('a2'),main.square_representation.index('a4'),0,0,1,0),
-                           start_board, "Moving a2 to a4\n", #pawn Move
+                           start_board, #pawn Move
                            [r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
                             p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
                             e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -111,8 +111,7 @@ castling_board =[
                             e, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
                             R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o]),
                            (main.set_move(main.square_representation.index("a7"),main.square_representation.index("a8"),Q,0,0,0),  #<- move
-                            promotion_board, 
-                            "Moving a7 to a8\n",          #auf der Konsole ausgegebenes String                                              #promotion into queen     
+                            promotion_board,  #promotion into queen
                             [Q, e, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
                              e, e, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -121,15 +120,13 @@ castling_board =[
                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                              e, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
                              R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o])])
-def test_make_move(capsys, move, board_position, printed_result, board_result):  
+def test_make_move( move, board_position, board_result):  
     main.board =board_position
     main.make_move(move)
-    stdout, stderr = capsys.readouterr()
-    assert stdout == printed_result
     assert main.board == board_result
 #,
                            #  (main.set_move(main.square_representation.index("b7"),main.square_representation.index("a6"),0,1,0,0),
-                           #   capture_board, "Moving b7 to a6\n",           #capture of a pawn
+                           #   capture_board,           #capture of a pawn
                            #   [r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
                            # p, e, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
                            # p, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -139,7 +136,7 @@ def test_make_move(capsys, move, board_position, printed_result, board_result):
                            # e, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
                            # R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o]),
                            # (main.set_move(main.square_representation.index("e1"),main.square_representation.index("c1"),0,0,0,1),
-                           # castling_board,"Moving e1 to c1\n",         #castling queen side
+                           # castling_board,         #castling queen side
                            # [r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
                            #  p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
                            #  e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -149,7 +146,7 @@ def test_make_move(capsys, move, board_position, printed_result, board_result):
                            #  P, P, P, P, P, P, P, P, o, o, o, o, o, o, o, o,
                            #  e, e, K, R, e, e, e, R, o, o, o, o, o, o, o, o]),
                            #  (main.set_move(main.square_representation.index("e1"),main.square_representation.index("g1"),0,0,0,1 ),
-                           # castling_board,"Moving e1 to g1\n",         #castling king side
+                           # castling_board,         #castling king side
                            # [r, n, b, q, k, b, n, r, o, o, o, o, o, o, o, o,
                            #  p, p, p, p, p, p, p, p, o, o, o, o, o, o, o, o,
                            #  e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -276,12 +273,12 @@ def test_load_fen(fen,board_result,side_result,can_castle_result):
 
 
 
-@pytest.mark.parametrize('char_sides, side, can_castle, result', [
-                                                  ('wb', 0, 0, "Side to move: w\nCastling: 0000\n"),
-                                                  ('wb', 1, 15, "Side to move: b\nCastling: 1111\n")
-                                                 ])
-def test_print_stats(capsys, char_sides, side, can_castle, result):
-    main.print_stats(char_sides,side,can_castle)
+@pytest.mark.parametrize('fen, result', [
+    ('rnbqkbnr/8/pppppppp/8/RRRRnnnn/8/PPPPPPPP/RNBQKBNR w  - 0 1', "Side to move: w\nCastling: 0000\n"),
+    ('rnbqkbnr/8/pppppppp/8/RRRRnnnn/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1', "Side to move: b\nCastling: 1111\n")    ])
+def test_print_stats(capsys, fen, result):
+    main.load_fen(fen)
+    main.print_stats()
     stdout, stderr = capsys.readouterr()
     assert stdout == result
 
@@ -306,7 +303,9 @@ def test_print_stats(capsys, char_sides, side, can_castle, result):
                                                 R, N, B, Q, K, B, N, R, o, o, o, o, o, o, o, o],black,
 "1   . x x x x x x . \n2   x x x x x x x x \n3   x x x x x x x x \n4   . . . . . . . . \n5   . . . . . . . . \n6   . . . . . . . . \n7   . . . . . . . . \n8   . . . . . . . . \n\n    A B C D E F G H\n")])
 def test_print_attack(capsys, board, side, result):
-    main.print_attack(board,side)
+    main.board = board
+    main.side = side
+    main.print_attack()
     stdout, stderr = capsys.readouterr()
     assert stdout == result
 
@@ -482,7 +481,7 @@ def test_print_attack(capsys, board, side, result):
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
-                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,None), #21
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,white,0), #21
                                                             ([K, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -490,7 +489,7 @@ def test_print_attack(capsys, board, side, result):
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
-                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,None), #22
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],0,black,0), #22
                                                             ([e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, N, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -498,7 +497,7 @@ def test_print_attack(capsys, board, side, result):
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
-                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],35,white,None), #23
+                                                              e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o],35,white,0), #23
                                                             ([k, r, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                                                               e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -510,7 +509,8 @@ def test_print_attack(capsys, board, side, result):
 
 ])  
 def test_is_position_attacked(board,position,side,result):
-    assert main.is_position_attacked(board,position,side) ==result
+    main.board =board
+    assert main.is_position_attacked(position,side) ==result
 
 
 @pytest.mark.parametrize('board, result', [         #es werden zwei parameter gegeben: das erwartete Resultat und board, das geprinted wird 
@@ -534,13 +534,14 @@ def test_is_position_attacked(board,position,side,result):
 "8   r n b q k b n r \n7   P P P P P P P P \n6   P P P P P P P P \n5   P P P P P P P P \n4   P P P P P P P P \n3   P P P P P P P P \n2   P P P P P P P P \n1   R N B Q K B N R \n\n    A B C D E F G H\n")
                                                 ])
 def test_print_board(capsys, board, result):        #dieser Test wird zweimal ausgeführt mit den beiden Werten aus den Tupeln
-    main.print_board(board)                         #hier printen wir das Board
+    main.board=board
+    main.print_board()                         #hier printen wir das Board
     stdout, stderr = capsys.readouterr()            #auf der Konsole ausgegeben String wird aufgenommen
     assert stdout == result                 
 
 def test_clear_board():
-    main.clear_board(board)
-    assert board == [e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
+    main.clear_board()
+    assert main.board == [e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o, 
                      e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                      e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                      e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
@@ -549,5 +550,6 @@ def test_clear_board():
                      e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o,
                      e, e, e, e, e, e, e, e, o, o, o, o, o, o, o, o]
  
+
 
 
